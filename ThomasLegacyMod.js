@@ -129,6 +129,17 @@ func:function()
 							G.Message({type:'important tall',text:'Your people have adopted the trait <b>'+me.displayName+'</b>.',icon:me.icon});
 						}
 					}
+				} 
+				else //The trait is had; check if it can be removed
+				{
+					if(G.checkPolicy('remove traits')=='on') {
+						if (Math.random()<1/10)
+						{
+							G.removeTrait(me);
+							G.Message({type:'important tall',text:'Your people have remove the trait <b>'+me.displayName+'</b>.',icon:me.icon});
+							
+						}
+					}
 				}
 			}
 			
@@ -706,19 +717,14 @@ func:function()
 		fractional:true,
 		tick:function(me,tick)
 		{
-			if (G.getRes('population').amount>0 && tick%2==0)
+			if (G.getRes('population').amount>0 && ((tick%2==0 && !G.has('nutrition')) || tick%4==0))
 			{
 				//note : this is "soft" sickness; it affects the chance of people falling sick
 				//G.getRes('happiness').amount+=(me.amount-G.getRes('happiness').amount)*0.01;
 				G.gain('happiness',me.amount*0.001,'health');
 				
 				var sickness=0.1;
-				var contagion = G.getRes('population').amount-50;
-				if(G.has('nutrition')) {
-					contagion /= 2;
-				}
-				contagion = Math.max(contagion, 0);
-				sickness+=Math.pow(contagion,0.1)*0.1;//more people means more contagion
+				sickness+=Math.pow(Math.max(G.getRes('population').amount-50, 0),0.1)*0.1;//more people means more contagion
 				G.gain('health',-G.getRes('population').amount*(Math.random()*sickness),'disease');//people randomly get sick
 				var recovery=0.98;
 				me.amount*=recovery;//people recover over time
@@ -1516,7 +1522,7 @@ func:function()
 	new G.Unit({
 		name:'gatherer',
 		startWith:5,
-		desc:'@forages for basic [food], [water] and [archaic building materials,Various interesting things]<>A vital part of an early tribe, [gatherer]s venture in the wilderness to gather food, wood, and other things of note. This is a test to see if the mod worked.',
+		desc:'@forages for basic [food], [water] and [archaic building materials,Various interesting things]<>A vital part of an early tribe, [gatherer]s venture in the wilderness to gather food, wood, and other things of note.',
 		icon:[0,2],
 		cost:{},
 		use:{'worker':1},
@@ -1966,6 +1972,7 @@ func:function()
 		effects:[
 			{type:'convert',from:{'sick':1,'herb':2.5},into:{'adult':1},chance:1/2,every:3},
 			{type:'convert',from:{'wounded':1,'herb':2.5},into:{'adult':1},chance:1/5,every:10},
+			{type:'gather',what:{'health':0.2},req:{'nutrition':true}},
 		],
 		req:{'healing':true},
 		category:'spiritual',
@@ -2675,7 +2682,7 @@ func:function()
 	});
 	new G.Tech({
 		name:'nutrition',
-		desc:'[healer]s now lower the rate of disease<>',
+		desc:'@Halves the rate of disease@[healer]s can now provide [health]<>',
 		icon:[23,7],
 		cost:{'insight':10},
 		req:{'healing':true},
@@ -2982,7 +2989,7 @@ func:function()
 		name:'monument-building',
 		desc:'@unlocks the [mausoleum], an early wonder<>',
 		icon:[24,8],
-		cost:{'insight':90,'culture':40,'influence':10},
+		cost:{'insight':90,'culture':40,'influence':20},
 		req:{'construction':true,'burial':true,'belief in the afterlife':true},
 		effects:[
 		],
@@ -3030,7 +3037,7 @@ func:function()
 		desc:'@unhappiness from death is doubled@may evolve into more complex spiritual thinking',
 		icon:[18,1],
 		cost:{'culture':5},
-		chance:5,
+		chance:7,
 		req:{'language':true},
 	});
 	new G.Trait({
@@ -3038,7 +3045,7 @@ func:function()
 		desc:'@unhappiness from death is halved',
 		icon:[21,1],
 		cost:{'culture':5,'faith':2},
-		chance:10,
+		chance:8,
 		req:{'fear of death':true,'oral tradition':true},
 	});
 	new G.Trait({
@@ -3092,6 +3099,7 @@ func:function()
 		{id:'food',name:'Food'},
 		{id:'work',name:'Work'},
 		{id:'population',name:'Population'},
+		{id:'cultural',name:'Cultural'},
 		{id:'faith',name:'Faith'}
 	);
 	
@@ -3118,6 +3126,16 @@ func:function()
 		cost:{},
 		startWith:true,
 		category:'debug',
+	});
+	new G.Policy({
+		name:'remove traits',
+		desc:'Slowly remove certain [trait]s that can have potential downsides.',
+		icon:[7,12,3,3],
+		cost:{'influence':1},
+		req: function() {
+			return G.has('rules of food') || G.has('scavenging');
+		},
+		category:'cultural',
 	});
 	new G.Policy({
 		name:'child workforce',
