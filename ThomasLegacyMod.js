@@ -2985,6 +2985,15 @@ G.AddData({
 			effects:[
 			],
 		});
+
+		new G.Tech({
+			name:'nomadism',
+			desc:'You can have up to 35 homeless people with normal birth rates',
+			icon:[20,1],
+			req:{'hunting':true, 'sedentism':false},
+			effects:[
+			],
+		});
 		
 		new G.Tech({
 			name:'monument-building',
