@@ -130,18 +130,6 @@ G.AddData({
 							}
 						}
 					} 
-					/** 
-					else //The trait is had; check if it can be removed
-					{
-						if(G.checkPolicy('remove traits')=='on' ) {
-							if (Math.random()<1/10)
-							{
-								G.
-								G.Message({type:'important tall',text:'Your people have removed the trait <b>'+me.displayName+'</b>.',icon:me.icon});
-								
-							}
-						}
-					}*/
 				}
 				
 				G.trackedStat=Math.max(G.trackedStat,G.getRes('population').amount);
@@ -434,8 +422,8 @@ G.AddData({
 							if (G.checkPolicy('population control')=='forbidden') birthRate*=0;
 							else if (G.checkPolicy('population control')=='limited') birthRate*=0.5;
 							birthRate*=productionMult;
-							if (homeless>0 && me.amount>15) birthRate*=0.05;//harder to make babies if you have more than 15 people and some of them are homeless
-							if (homeless>0 && G.has('nomadism') && me.amount<=35) birthRate *= 20;
+							if (homeless>0 && (G.has('nomadism') && !G.has('sedentism') && me.amount>35 ||me.amount>15)) birthRate*=0.05;//harder to make babies if you have more than 15 people and some of them are homeless
+							
 							var n=randomFloor(G.getRes('adult').amount*0.0003*birthRate);G.gain('baby',n,'birth');G.gain('happiness',n*10,'birth');born+=n;
 							var n=randomFloor(G.getRes('elder').amount*0.00003*birthRate);G.gain('baby',n,'birth');G.gain('happiness',n*10,'birth');born+=n;
 							G.getRes('born this year').amount+=born;
@@ -1536,7 +1524,8 @@ G.AddData({
 				{type:'gather',context:'gather',what:{'water':1,'muddy water':1},amount:1,max:3},
 				{type:'gather',context:'gather',what:{'herb':0.5,'fruit':0.5},amount:1,max:1,req:{'plant lore':true}},
 				{type:'addFree',what:{'worker':0.1},req:{'scavenging':true}},
-				{type:'mult',value:1.2,req:{'harvest rituals':'on'}}
+				{type:'mult',value:1.2,req:{'harvest rituals':'on'}},
+				{type:'mult',value:1.05,req:{'nomadism':true,'sedentism':false}}
 			],
 			req:{'tribalism':true},
 			category:'production',
@@ -1679,7 +1668,8 @@ G.AddData({
 				{type:'gather',context:'hunt',amount:2.5,max:5,mode:'spear hunting'},
 				{type:'gather',context:'hunt',amount:4,max:5,mode:'bow hunting'},//TODO : consuming arrows?
 				{type:'function',func:unitGetsConverted({'wounded':1},0.001,0.03,'[X] [people] wounded while hunting.','hunter was','hunters were'),chance:1/30},
-				{type:'mult',value:1.2,req:{'harvest rituals':'on'}}
+				{type:'mult',value:1.2,req:{'harvest rituals':'on'}},
+				{type:'mult',value:1.05,req:{'nomadism':true,'sedentism':false}}
 			],
 			req:{'hunting':true},
 			category:'production',
@@ -2989,12 +2979,13 @@ G.AddData({
 
 		new G.Tech({
 			name:'nomadism',
-			desc:'@Your nomad tribe can support 35 people without housing@Hunting is 5% more effective<>Test',
+			desc:'@Your nomad tribe can support 35 [population,people] without housing@Improves [gatherer] and [hunter] efficiency by 5%@Effects end when you research Sedentism<>It takes great skill to make a large group of people self-sufficient, especially with only a limited capacity to exploit an area for resources before having to move on.',
 			icon:[20,1],
 			cost:{'insight':10},
 			req:{'hunting':true, 'sedentism':false},
 			effects:[
 			],
+			chance:2,
 		});
 		
 		new G.Tech({
@@ -3138,16 +3129,6 @@ G.AddData({
 			cost:{},
 			startWith:true,
 			category:'debug',
-		});
-		new G.Policy({
-			name:'remove traits',
-			desc:'Slowly remove certain traits that can have potential downsides.',
-			icon:[7,12,3,3],
-			cost:{'influence':1},
-			req: function() {
-				return G.has('rules of food') || G.has('scavenging');
-			},
-			category:'cultural',
 		});
 		new G.Policy({
 			name:'child workforce',
