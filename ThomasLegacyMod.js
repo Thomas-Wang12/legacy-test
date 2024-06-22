@@ -1516,7 +1516,7 @@ func:function()
 	new G.Unit({
 		name:'gatherer',
 		startWith:5,
-		desc:'@forages for basic [food], [water] and [archaic building materials,Various interesting things]<>A vital part of an early tribe, [gatherer]s venture in the wilderness to gather food, wood, and other things of note.',
+		desc:'@forages for basic [food], [water] and [archaic building materials,Various interesting things]<>A vital part of an early tribe, [gatherer]s venture in the wilderness to gather food, wood, and other things of note. This is a test to see if the mod worked.',
 		icon:[0,2],
 		cost:{},
 		use:{'worker':1},
