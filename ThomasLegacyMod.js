@@ -130,18 +130,6 @@ func:function()
 						}
 					}
 				} 
-				/** 
-				else //The trait is had; check if it can be removed
-				{
-					if(G.checkPolicy('remove traits')=='on' ) {
-						if (Math.random()<1/10)
-						{
-							G.
-							G.Message({type:'important tall',text:'Your people have removed the trait <b>'+me.displayName+'</b>.',icon:me.icon});
-							
-						}
-					}
-				}*/
 			}
 			
 			G.trackedStat=Math.max(G.trackedStat,G.getRes('population').amount);
@@ -434,7 +422,10 @@ func:function()
 						if (G.checkPolicy('population control')=='forbidden') birthRate*=0;
 						else if (G.checkPolicy('population control')=='limited') birthRate*=0.5;
 						birthRate*=productionMult;
-						if (homeless>0 && me.amount>15) birthRate*=0.05;//harder to make babies if you have more than 15 people and some of them are homeless
+						
+						if (homeless>0 && ((G.has('nomadism') && !G.has('sedentism') && me.amount>35) || me.amount>15)) {
+							birthRate*=0.05;
+						} //harder to make babies if you have more than 15 people and some of them are homeless
 						var n=randomFloor(G.getRes('adult').amount*0.0003*birthRate);G.gain('baby',n,'birth');G.gain('happiness',n*10,'birth');born+=n;
 						var n=randomFloor(G.getRes('elder').amount*0.00003*birthRate);G.gain('baby',n,'birth');G.gain('happiness',n*10,'birth');born+=n;
 						G.getRes('born this year').amount+=born;
@@ -1379,7 +1370,7 @@ func:function()
 			if (limit>0)
 			{
 				var mult=1;
-				if (G.year<5) mult=1.25;//faster research the first 5 years
+				if (G.year<5 && !G.has('symbolism')) mult=1.25;//faster research the first 5 years
 				me.amount+=randomFloor(Math.pow(1-me.amount/limit,2)*(Math.random()*amount*me.mult*mult));
 				me.amount=Math.min(me.amount,limit);
 			}
@@ -1678,7 +1669,9 @@ func:function()
 			{type:'gather',context:'hunt',amount:2.5,max:5,mode:'spear hunting'},
 			{type:'gather',context:'hunt',amount:4,max:5,mode:'bow hunting'},//TODO : consuming arrows?
 			{type:'function',func:unitGetsConverted({'wounded':1},0.001,0.03,'[X] [people] wounded while hunting.','hunter was','hunters were'),chance:1/30},
-			{type:'mult',value:1.2,req:{'harvest rituals':'on'}}
+			{type:'mult',value:1.2,req:{'harvest rituals':'on'}},
+			{type:'mult',value:1.1,req:{'nomadism':true,'sedentism':false}}
+			{type:'mult',value:0.9,req:{'sedentism':true}}
 		],
 		req:{'hunting':true},
 		category:'production',
@@ -1720,14 +1713,14 @@ func:function()
 		modes:{
 			'stick fires':{name:'Start fires from sticks',icon:[0,6,13,7],desc:'Craft [fire pit]s from 20 [stick]s each.'},
 			'cook':{name:'Cook',icon:[6,7,13,7],desc:'Turn [meat] and [seafood] into [cooked meat] and [cooked seafood] in the embers of [fire pit]s',req:{'cooking':true}},
-			'cure':{name:'Cure & smoke',icon:[11,6,12,6],desc:'Turn 1 [meat] or [seafood] into 2 [cured meat] or [cured seafood] using [salt] in the embers of [fire pit]s',req:{'curing':true}},
+			'cure':{name:'Cure & smoke',icon:[11,6,12,6],desc:'Turn 2 [meat] or [seafood] into 3 [cured meat] or [cured seafood] using [salt] in the embers of [fire pit]s',req:{'curing':true}},
 		},
 		effects:[
 			{type:'convert',from:{'stick':20},into:{'fire pit':1},every:5,mode:'stick fires'},
 			{type:'convert',from:{'meat':1,'fire pit':0.01},into:{'cooked meat':1},every:1,repeat:5,mode:'cook'},
 			{type:'convert',from:{'seafood':1,'fire pit':0.01},into:{'cooked seafood':1},every:1,repeat:5,mode:'cook'},
-			{type:'convert',from:{'meat':1,'salt':1,'fire pit':0.01},into:{'cured meat':2},every:1,repeat:10,mode:'cure'},
-			{type:'convert',from:{'seafood':1,'salt':1,'fire pit':0.01},into:{'cured seafood':2},every:1,repeat:10,mode:'cure'},
+			{type:'convert',from:{'meat':2,'salt':1,'fire pit':0.01},into:{'cured meat':3},every:1,repeat:8,mode:'cure'},
+			{type:'convert',from:{'seafood':2,'salt':1,'fire pit':0.01},into:{'cured seafood':3},every:1,repeat:8,mode:'cure'},
 		],
 		req:{'fire-making':true},
 		category:'crafting',
@@ -1743,6 +1736,7 @@ func:function()
 		staff:{'stone tools':1},
 		upkeep:{'coin':0.2},
 		gizmos:true,
+		
 		modes:{
 			'clay pots':{name:'Craft pots out of clay',icon:[1,7,13,5],desc:'Craft [pot]s from 3 [clay] each; requires [fire pit]s.'},
 			'mud pots':{name:'Craft pots out of mud',icon:[0,7,13,5],desc:'Craft [pot]s from 10 [mud] each; requires [fire pit]s.'},
@@ -2563,8 +2557,18 @@ func:function()
 	});
 	
 	new G.Tech({
+		name:'nomadism',
+		desc:'@You can support a population of 35 homeless people (up from 15)@Improved hunting by 10%',
+		icon:[8,1],
+		cost:{'insight':20},
+		req:{'hunting':true,'sedentism':false},
+		effects:[
+		],
+		chance:3,
+	});
+	new G.Tech({
 		name:'sedentism',
-		desc:'@unlocks [mud shelter]s and [branch shelter]s@unlocks [lodge]s<>To stay in one place when food is scarce is a bold gamble, especially to those without knowledge of agriculture.',//TODO : this should unlock a policy that lets you switch between nomadism (housing and food storage have no effect) and sedentism (gathering and hunting are much less efficient)
+		desc:'@unlocks [mud shelter]s and [branch shelter]s@unlocks [lodge]s@Hunting is 10% worse<>To stay in one place when food is scarce is a bold gamble, especially to those without knowledge of agriculture.',//TODO : this should unlock a policy that lets you switch between nomadism (housing and food storage have no effect) and sedentism (gathering and hunting are much less efficient)
 		icon:[8,1],
 		cost:{'insight':20},
 		req:{'stone-knapping':true,'digging':true,'language':true},
@@ -3070,18 +3074,16 @@ func:function()
 		desc:'@people consume 15% less [food], but derive less joy from eating',
 		icon:[3,12,19,1],
 		cost:{'culture':5},
-		chance:2,
+		chance:50,
 		req:{'tribalism':true,'joy of eating':false},
-		category:'short',
 	});
 	new G.Trait({
 		name:'joy of eating',
 		desc:'@people consume 15% more [food], but are happier when eating',
 		icon:[4,12,19,1],
 		cost:{'culture':5},
-		chance:2,
+		chance:50,
 		req:{'tribalism':true,'culture of moderation':false},
-		category:'short',
 	});
 	new G.Trait({
 		name:'insect-eating',
@@ -3129,16 +3131,6 @@ func:function()
 		cost:{},
 		startWith:true,
 		category:'debug',
-	});
-	new G.Policy({
-		name:'remove traits',
-		desc:'Slowly remove certain traits that can have potential downsides.',
-		icon:[7,12,3,3],
-		cost:{'influence':1},
-		req: function() {
-			return G.has('rules of food') || G.has('scavenging');
-		},
-		category:'cultural',
 	});
 	new G.Policy({
 		name:'child workforce',
