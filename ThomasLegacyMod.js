@@ -3070,18 +3070,16 @@ G.AddData({
 			desc:'@people consume 15% less [food], but derive less joy from eating',
 			icon:[3,12,19,1],
 			cost:{'culture':5},
-			chance:2,
+			chance:50,
 			req:{'tribalism':true,'joy of eating':false},
-			category:'short',
 		});
 		new G.Trait({
 			name:'joy of eating',
 			desc:'@people consume 15% more [food], but are happier when eating',
 			icon:[4,12,19,1],
 			cost:{'culture':5},
-			chance:2,
+			chance:50,
 			req:{'tribalism':true,'culture of moderation':false},
-			category:'short',
 		});
 		new G.Trait({
 			name:'insect-eating',
