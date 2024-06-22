@@ -1670,7 +1670,7 @@ func:function()
 			{type:'gather',context:'hunt',amount:4,max:5,mode:'bow hunting'},//TODO : consuming arrows?
 			{type:'function',func:unitGetsConverted({'wounded':1},0.001,0.03,'[X] [people] wounded while hunting.','hunter was','hunters were'),chance:1/30},
 			{type:'mult',value:1.2,req:{'harvest rituals':'on'}},
-			{type:'mult',value:1.1,req:{'nomadism':true,'sedentism':false}}
+			{type:'mult',value:1.1,req:{'nomadism':true,'sedentism':false}},
 			{type:'mult',value:0.9,req:{'sedentism':true}}
 		],
 		req:{'hunting':true},
@@ -2560,7 +2560,7 @@ func:function()
 		name:'nomadism',
 		desc:'@You can support a population of 35 homeless people (up from 15)@Improved hunting by 10%',
 		icon:[8,1],
-		cost:{'insight':20},
+		cost:{'insight':10},
 		req:{'hunting':true,'sedentism':false},
 		effects:[
 		],
