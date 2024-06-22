@@ -130,17 +130,18 @@ func:function()
 						}
 					}
 				} 
+				/** 
 				else //The trait is had; check if it can be removed
 				{
-					if(G.checkPolicy('remove traits')=='on') {
+					if(G.checkPolicy('remove traits')=='on' ) {
 						if (Math.random()<1/10)
 						{
-							G.has(me.name) = false;
-							G.Message({type:'important tall',text:'Your people have remove the trait <b>'+me.displayName+'</b>.',icon:me.icon});
+							G.
+							G.Message({type:'important tall',text:'Your people have removed the trait <b>'+me.displayName+'</b>.',icon:me.icon});
 							
 						}
 					}
-				}
+				}*/
 			}
 			
 			G.trackedStat=Math.max(G.trackedStat,G.getRes('population').amount);
@@ -3069,16 +3070,18 @@ func:function()
 		desc:'@people consume 15% less [food], but derive less joy from eating',
 		icon:[3,12,19,1],
 		cost:{'culture':5},
-		chance:50,
+		chance:2,
 		req:{'tribalism':true,'joy of eating':false},
+		category:'short',
 	});
 	new G.Trait({
 		name:'joy of eating',
 		desc:'@people consume 15% more [food], but are happier when eating',
 		icon:[4,12,19,1],
 		cost:{'culture':5},
-		chance:50,
+		chance:2,
 		req:{'tribalism':true,'culture of moderation':false},
+		category:'short',
 	});
 	new G.Trait({
 		name:'insect-eating',
