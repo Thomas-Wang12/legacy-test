@@ -435,6 +435,7 @@ G.AddData({
 							else if (G.checkPolicy('population control')=='limited') birthRate*=0.5;
 							birthRate*=productionMult;
 							if (homeless>0 && me.amount>15) birthRate*=0.05;//harder to make babies if you have more than 15 people and some of them are homeless
+							if (homeless>0 && G.has('nomadism') && me.amount<=35) birthRate *= 20;
 							var n=randomFloor(G.getRes('adult').amount*0.0003*birthRate);G.gain('baby',n,'birth');G.gain('happiness',n*10,'birth');born+=n;
 							var n=randomFloor(G.getRes('elder').amount*0.00003*birthRate);G.gain('baby',n,'birth');G.gain('happiness',n*10,'birth');born+=n;
 							G.getRes('born this year').amount+=born;
@@ -2988,7 +2989,7 @@ G.AddData({
 
 		new G.Tech({
 			name:'nomadism',
-			desc:'You can have up to 35 homeless people with normal birth rates',
+			desc:'@Your nomad tribe can support 35 people without housing@Hunting is 5% more effective<>Test',
 			icon:[20,1],
 			cost:{'insight':10},
 			req:{'hunting':true, 'sedentism':false},
