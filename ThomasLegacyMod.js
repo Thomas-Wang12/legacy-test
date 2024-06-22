@@ -2990,6 +2990,7 @@ G.AddData({
 			name:'nomadism',
 			desc:'You can have up to 35 homeless people with normal birth rates',
 			icon:[20,1],
+			cost:{'insight':10},
 			req:{'hunting':true, 'sedentism':false},
 			effects:[
 			],
