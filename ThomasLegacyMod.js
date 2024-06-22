@@ -135,7 +135,7 @@ func:function()
 					if(G.checkPolicy('remove traits')=='on') {
 						if (Math.random()<1/10)
 						{
-							G.removeTrait(me);
+							G.has(me.name) = false;
 							G.Message({type:'important tall',text:'Your people have remove the trait <b>'+me.displayName+'</b>.',icon:me.icon});
 							
 						}
@@ -3129,7 +3129,7 @@ func:function()
 	});
 	new G.Policy({
 		name:'remove traits',
-		desc:'Slowly remove certain [trait]s that can have potential downsides.',
+		desc:'Slowly remove certain traits that can have potential downsides.',
 		icon:[7,12,3,3],
 		cost:{'influence':1},
 		req: function() {
