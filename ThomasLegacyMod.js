@@ -2304,7 +2304,7 @@ G.AddData({
 			effects:[
 				{type:'explore',explored:0.1,unexplored:0},
 				{type:'function',func:unitGetsConverted({},0.01,0.05,'[X] [people].','wanderer got lost','wanderers got lost'),chance:1/100},
-				{type:'addFree',what:{'worker':(1 / ((G.getRes('land').amount - 9)))},req:{'migration':true}},
+				//{type:'addFree',what:{'worker':(1 / ((G.getRes('land').amount - 9)))},req:{'migration':true}},
 
 			],
 			req:{'speech':true},
