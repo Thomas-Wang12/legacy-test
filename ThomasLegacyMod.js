@@ -433,7 +433,7 @@ G.AddData({
 							if (G.checkPolicy('population control')=='forbidden') birthRate*=0;
 							else if (G.checkPolicy('population control')=='limited') birthRate*=0.5;
 							birthRate*=productionMult;
-							if (homeless>0 && (G.has('nomadism') && !G.has('sedentism') && me.amount>35 ||me.amount>15)) birthRate*=0.05;//harder to make babies if you have more than 15 people and some of them are homeless
+							if ((homeless>0 && me.amount > 35) || ((!G.has('nomadism') || (G.has('nomadism') && (!G.has('sedentism')))) && me.amount>15)) birthRate*=0.05;//harder to make babies if you have more than 15 people and some of them are homeless
 							
 							var n=randomFloor(G.getRes('adult').amount*0.0003*birthRate);G.gain('baby',n,'birth');G.gain('happiness',n*10,'birth');born+=n;
 							var n=randomFloor(G.getRes('elder').amount*0.00003*birthRate);G.gain('baby',n,'birth');G.gain('happiness',n*10,'birth');born+=n;
@@ -2317,7 +2317,8 @@ G.AddData({
 			staff:{'stone tools':1},
 			effects:[
 				{type:'explore',explored:0,unexplored:0.01},
-				{type:'function',func:unitGetsConverted({},0.01,0.05,'[X] [people].','scout got lost','scouts got lost'),chance:1/300}
+				{type:'function',func:unitGetsConverted({},0.01,0.05,'[X] [people].','scout got lost','scouts got lost'),chance:1/300},
+				{type:'addFree',what:{'worker':(1 / (G.getRes('land') - 9))},req:{'migration':true}},
 			],
 			req:{'scouting':true},
 			category:'exploration',
@@ -2537,6 +2538,16 @@ G.AddData({
 			icon:[24,7],
 			cost:{'insight':10},
 			req:{'tool-making':true,'language':true},
+			effects:[
+			],
+			chance:2,
+		});
+		new G.Tech({
+			name:'migration',
+			desc:'@Idle workers explore new land tiles slowly@Rate of exploration greatly slows down the more land you have<>',
+			icon:[24,7],
+			cost:{'insight':10},
+			req:{'sedentism':false,'scouting':false},
 			effects:[
 			],
 			chance:2,
