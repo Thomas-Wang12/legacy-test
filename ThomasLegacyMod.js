@@ -366,7 +366,7 @@ G.AddData({
 					}
 					
 					if(G.has('sewing')) {
-						G.gain('happiness',-leftout*0.15,'no clothing');
+						G.gain('happiness',-leftout*0.50,'no clothing');
 					} else {
 						G.gain('happiness',-leftout*0.05,'no clothing');
 					}
@@ -387,7 +387,7 @@ G.AddData({
 					}
 
 					if(G.has('fire-making')) {
-						G.gain('happiness',-leftout*0.1,'cold & darkness');
+						G.gain('happiness',-leftout*0.50,'cold & darkness');
 					} else {
 						G.gain('happiness',-leftout*0.05,'cold & darkness');
 					}
