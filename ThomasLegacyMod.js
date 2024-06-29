@@ -2304,6 +2304,8 @@ G.AddData({
 			effects:[
 				{type:'explore',explored:0.1,unexplored:0},
 				{type:'function',func:unitGetsConverted({},0.01,0.05,'[X] [people].','wanderer got lost','wanderers got lost'),chance:1/100}
+				{type:'addFree',what:{'worker':(1 / (G.getRes('land') - 9))},req:{'migration':true}},
+
 			],
 			req:{'speech':true},
 			category:'exploration',
@@ -2318,7 +2320,6 @@ G.AddData({
 			effects:[
 				{type:'explore',explored:0,unexplored:0.01},
 				{type:'function',func:unitGetsConverted({},0.01,0.05,'[X] [people].','scout got lost','scouts got lost'),chance:1/300},
-				{type:'addFree',what:{'worker':(1 / (G.getRes('land') - 9))},req:{'migration':true}},
 			],
 			req:{'scouting':true},
 			category:'exploration',
@@ -2550,7 +2551,7 @@ G.AddData({
 			req:{'sedentism':false,'scouting':false},
 			effects:[
 			],
-			chance:2,
+			chance:1,
 		});
 		new G.Tech({
 			name:'canoes',
