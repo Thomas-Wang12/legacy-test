@@ -364,7 +364,13 @@ G.AddData({
 						G.gain('health',fulfilled*objects[i][1],'clothing');
 						leftout-=fulfilled;
 					}
-					G.gain('happiness',-leftout*0.15,'no clothing');
+					
+					if(G.has('sewing')) {
+						G.gain('happiness',-leftout*0.15,'no clothing');
+					} else {
+						G.gain('happiness',-leftout*0.05,'no clothing');
+					}
+					
 					G.gain('health',-leftout*0.15,'no clothing');
 					
 					//fire
@@ -379,7 +385,12 @@ G.AddData({
 						G.gain('health',fulfilled*objects[i][2],'warmth & light');
 						leftout-=fulfilled;
 					}
-					G.gain('happiness',-leftout*0.1,'cold & darkness');
+
+					if(G.has('fire-making')) {
+						G.gain('happiness',-leftout*0.1,'cold & darkness');
+					} else {
+						G.gain('happiness',-leftout*0.05,'cold & darkness');
+					}
 					G.gain('health',-leftout*0.1,'cold & darkness');
 					
 					//homelessness
@@ -2557,7 +2568,7 @@ G.AddData({
 			name:'sedentism',
 			desc:'@unlocks [mud shelter]s and [branch shelter]s@unlocks [lodge]s<>To stay in one place when food is scarce is a bold gamble, especially to those without knowledge of agriculture.',//TODO : this should unlock a policy that lets you switch between nomadism (housing and food storage have no effect) and sedentism (gathering and hunting are much less efficient)
 			icon:[8,1],
-			cost:{'insight':20},
+			cost:{'insight':25},
 			req:{'stone-knapping':true,'digging':true,'language':true},
 			effects:[
 			],
