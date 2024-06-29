@@ -1310,6 +1310,19 @@ G.AddData({
 			},
 		});
 		new G.Res({
+			name:'clay tablet',
+			desc:'A clay tablet.//May be used up over time, creating [insight].',
+			icon:[1,7],
+			partOf:'misc materials',
+			category:'misc',
+			tick:function(me,tick)
+			{
+				var toSpoil=me.amount*0.01;
+				var spent=G.lose(me.name,randomFloor(toSpoil),'decay');
+				G.pseudoGather(G.getRes('insight'),randomFloor(spent));
+			},
+		});
+		new G.Res({
 			name:'salt',
 			desc:'Gives flavor to [food], rendering it more enjoyable to eat; may also be used to preserve food and make it last longer.',
 			icon:[11,7],
@@ -1619,7 +1632,8 @@ G.AddData({
 				'bone statuettes':{name:'Carve bone statuettes',icon:[8,9],desc:'Turn [bone]s into [statuette]s.',use:{'knapped tools':1}},
 				'cut stone':{name:'Cut stones',icon:[0,8],desc:'Slowly turn 10 [stone]s into 1 [cut stone].',req:{'masonry':true},use:{'stone tools':1}},
 				'smash cut stone':{name:'Smash stone blocks',icon:[2,6],desc:'Turn [cut stone]s into 9 [stone]s each.',req:{'quarrying':true},use:{'stone tools':1}},
-				'gem blocks':{name:'Carve gem blocks',icon:[7,9],desc:'Slowly turn 10 [gems] into 1 [gem block].',req:{'gem-cutting':true},use:{'stone tools':1}}
+				'gem blocks':{name:'Carve gem blocks',icon:[7,9],desc:'Slowly turn 10 [gems] into 1 [gem block].',req:{'gem-cutting':true},use:{'stone tools':1}},
+				'clay tablets':{name:'Make clay tablets',icon:[8,9],desc:'Turn [clay] into clay tablets that produce insight over time.',req:{'writing':true},use:{'stone tools':1}}
 			},
 			effects:[
 				{type:'convert',from:{'stone':1},into:{'statuette':1},every:5,mode:'stone statuettes'},
@@ -1627,6 +1641,7 @@ G.AddData({
 				{type:'convert',from:{'stone':10},into:{'cut stone':1},every:15,mode:'cut stone'},
 				{type:'convert',from:{'cut stone':1},into:{'stone':9},every:5,mode:'smash cut stone'},
 				{type:'convert',from:{'gems':10},into:{'gem block':1},every:15,mode:'gem blocks'},
+				{type:'convert',from:{'clay':2,'insight':1},into:{'clay tablet':1},every:10,mode:'clay tablets'},
 				{type:'mult',value:1.2,req:{'ground stone tools':true}}
 			],
 			req:{'carving':true},
@@ -2304,7 +2319,6 @@ G.AddData({
 			effects:[
 				{type:'explore',explored:0.1,unexplored:0},
 				{type:'function',func:unitGetsConverted({},0.01,0.05,'[X] [people].','wanderer got lost','wanderers got lost'),chance:1/100},
-				//{type:'addFree',what:{'worker':(1 / ((G.getRes('land').amount - 9)))},req:{'migration':true}},
 
 			],
 			req:{'speech':true},
@@ -2480,24 +2494,35 @@ G.AddData({
 		});
 		new G.Tech({
 			name:'language',
-			desc:'@provides 30 [inspiration]@provides 30 [wisdom]<>[language] improves on [speech] by combining complex grammar with a rich vocabulary, allowing for better communication and the first signs of culture.',
+			desc:'@provides 30 [inspiration]@provides 25 [wisdom]<>[language] improves on [speech] by combining complex grammar with a rich vocabulary, allowing for better communication and the first signs of culture.',
 			icon:[2,1],
 			cost:{'insight':10},
 			req:{'speech':true},
 			effects:[
-				{type:'provide res',what:{'inspiration':30,'wisdom':30}},
+				{type:'provide res',what:{'inspiration':30,'wisdom':25}},
 			],
 			chance:3,
 		});
 		
 		new G.Tech({
 			name:'oral tradition',
-			desc:'@unlocks [storyteller]@provides 20 [inspiration]@provides 20 [wisdom]<>[oral tradition] emerges when the members of a tribe gather at night to talk about their day. Stories, ideas, and myths are all shared and passed on from generation to generation.',
+			desc:'@unlocks [storyteller]@provides 15 [inspiration]@provides 15 [wisdom]<>[oral tradition] emerges when the members of a tribe gather at night to talk about their day. Stories, ideas, and myths are all shared and passed on from generation to generation.',
 			icon:[5,1],
 			cost:{'insight':10},
 			req:{'language':true},
 			effects:[
-				{type:'provide res',what:{'inspiration':20,'wisdom':20}},
+				{type:'provide res',what:{'inspiration':15,'wisdom':15}},
+			],
+		});
+
+		new G.Tech({
+			name:'writing',
+			desc:'@provides 15 [inspiration]@provides 15 [wisdom]@unlocks clay tablets (with [carving])<>Writing on tablets can preserve knowledge and culture throughout generations.',
+			icon:[2,10],
+			cost:{'insight':10},
+			req:{'language':true},
+			effects:[
+				{type:'provide res',what:{'inspiration':15,'wisdom':15}},
 			],
 		});
 		
@@ -2550,6 +2575,7 @@ G.AddData({
 			cost:{'insight':5},
 			req:{'sedentism':false,'scouting':false},
 			effects:[
+				{type:'provide res',what:{'land':1,'wisdom':1}},
 			],
 		});
 		new G.Tech({
