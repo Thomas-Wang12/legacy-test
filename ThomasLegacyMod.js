@@ -2304,7 +2304,7 @@ G.AddData({
 			effects:[
 				{type:'explore',explored:0.1,unexplored:0},
 				{type:'function',func:unitGetsConverted({},0.01,0.05,'[X] [people].','wanderer got lost','wanderers got lost'),chance:1/100},
-				{type:'addFree',what:{'worker':(1 / (G.getRes('land') - 9))},req:{'migration':true}},
+				{type:'addFree',what:{'worker':(1 / ((G.getRes('land') - 9)))},req:{'migration':true}},
 
 			],
 			req:{'speech':true},
@@ -2545,13 +2545,12 @@ G.AddData({
 		});
 		new G.Tech({
 			name:'migration',
-			desc:'@Idle workers explore new land tiles slowly@Rate of exploration greatly slows down the more land you have<>',
+			desc:'@Idle workers explore new land tiles slowly@Rate of exploration greatly slows down the more land you have<>In search for greener pastures.',
 			icon:[24,7],
-			cost:{'insight':10},
+			cost:{'insight':5},
 			req:{'sedentism':false,'scouting':false},
 			effects:[
 			],
-			chance:1,
 		});
 		new G.Tech({
 			name:'canoes',
