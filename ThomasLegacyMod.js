@@ -366,9 +366,9 @@ G.AddData({
 					}
 					
 					if(G.has('sewing')) {
-						G.gain('happiness',-leftout*0.15,'no clothing');
+						G.gain('happiness',-leftout*0.2,'no clothing');
 					} else {
-						G.gain('happiness',-leftout*0.05,'no clothing');
+						G.gain('happiness',-leftout*0.1,'no clothing');
 					}
 					
 					G.gain('health',-leftout*0.15,'no clothing');
@@ -1863,14 +1863,14 @@ G.AddData({
 				'gold':{name:'Gold',icon:[11,8],desc:'Mine for [gold ore] with x5 efficiency.',req:{'prospecting':true},use:{'worker':3,'metal tools':3}},
 			},
 			effects:[
-				{type:'gather',context:'mine',amount:10,max:30,mode:'any'},
-				{type:'gather',context:'mine',what:{'stone':10},max:30,notMode:'off'},
-				{type:'gather',context:'mine',what:{'coal':50},max:30,mode:'coal'},
-				{type:'gather',context:'mine',what:{'salt':50},max:30,mode:'salt'},
-				{type:'gather',context:'mine',what:{'copper ore':50},max:30,mode:'copper'},
-				{type:'gather',context:'mine',what:{'tin ore':50},max:30,mode:'tin'},
-				{type:'gather',context:'mine',what:{'iron ore':50},max:30,mode:'iron'},
-				{type:'gather',context:'mine',what:{'gold ore':50},max:30,mode:'gold'},
+				{type:'gather',context:'mine',amount:8,max:30,mode:'any'},
+				{type:'gather',context:'mine',what:{'stone':8},max:30,notMode:'off'},
+				{type:'gather',context:'mine',what:{'coal':40},max:30,mode:'coal'},
+				{type:'gather',context:'mine',what:{'salt':40},max:30,mode:'salt'},
+				{type:'gather',context:'mine',what:{'copper ore':40},max:30,mode:'copper'},
+				{type:'gather',context:'mine',what:{'tin ore':40},max:30,mode:'tin'},
+				{type:'gather',context:'mine',what:{'iron ore':40},max:30,mode:'iron'},
+				{type:'gather',context:'mine',what:{'gold ore':40},max:30,mode:'gold'},
 				{type:'function',func:unitGetsConverted({'wounded':1},0.001,0.01,'[X] [people].','mine collapsed, wounding its miners','mines collapsed, wounding their miners'),chance:1/50}
 			],
 			gizmos:true,
@@ -2318,6 +2318,7 @@ G.AddData({
 			use:{'worker':1},
 			effects:[
 				{type:'explore',explored:0.1,unexplored:0},
+				{type:'explore',explored:0,unexplored:(																				0.1 / G.getRes('land')),req:{'migration':true}},
 				{type:'function',func:unitGetsConverted({},0.01,0.05,'[X] [people].','wanderer got lost','wanderers got lost'),chance:1/100},
 
 			],
@@ -2570,12 +2571,11 @@ G.AddData({
 		});
 		new G.Tech({
 			name:'migration',
-			desc:'@Idle workers explore new land tiles slowly@Rate of exploration greatly slows down the more land you have<>In search for greener pastures.',
+			desc:'@Wanderers slowly explore new land tiles slowly@The rate of exploration greatly slows down the more land you have<>In search for greener pastures.',
 			icon:[24,7],
 			cost:{'insight':5},
 			req:{'sedentism':false,'scouting':false},
 			effects:[
-				{type:'provide res',what:{'land':1,'wisdom':1}},
 			],
 		});
 		new G.Tech({
@@ -2949,7 +2949,7 @@ G.AddData({
 			name:'mining',
 			desc:'@unlocks [mine]s<>Strike the earth!',
 			icon:[24,5],
-			cost:{'insight':25},
+			cost:{'insight':20},
 			req:{'digging':true,'building':true},
 			effects:[
 				{type:'show context',what:['mine']}
@@ -3141,7 +3141,21 @@ G.AddData({
 				{type:'function',func:function(){G.getDict('bugs').turnToByContext['eating']['happiness']=0.03;}},
 			],
 		});
-		
+		new G.Trait({
+			name:'mining evolution',
+			desc:'@[mine]mining is 25% faster, but mines cause health problems and collapse more often@unlocks mining related policies',
+			icon:[8,11,22,1],
+			chance:3,
+			req:{'mining':true}
+		});
+		new G.Trait({
+			name:'healthy culture',
+			desc:'@Generates [health] and halves the rate of disease@[herb]s cost much less [happiness] when eaten',
+			icon:[8,11,22,1],
+			chance:50,
+			req:{'nutrition':true},
+			cost:{'culture':20,'insight':20}
+		});
 		/*=====================================================================================
 		POLICIES
 		=======================================================================================*/
