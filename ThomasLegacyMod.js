@@ -433,7 +433,7 @@ G.AddData({
 							if (G.checkPolicy('population control')=='forbidden') birthRate*=0;
 							else if (G.checkPolicy('population control')=='limited') birthRate*=0.5;
 							birthRate*=productionMult;
-							if (homeless>0 && ((me.amount > 35) || (!G.has('nomadism') && me.amount>15) || (G.has('nomadism') && G.has('sedentism') && me.amount>15))) birthRate*=0.05;//harder to make babies if you have more than 15 people and some of them are homeless
+							if (homeless>0 && ((G.has('nomadism') && me.amount > G.getRes('land').amount) || (!G.has('nomadism') && me.amount>15) || (G.has('nomadism') && G.has('sedentism') && me.amount>15))) birthRate*=0.05;//harder to make babies if you have more than 15 people and some of them are homeless
 							
 							var n=randomFloor(G.getRes('adult').amount*0.0003*birthRate);G.gain('baby',n,'birth');G.gain('happiness',n*10,'birth');born+=n;
 							var n=randomFloor(G.getRes('elder').amount*0.00003*birthRate);G.gain('baby',n,'birth');G.gain('happiness',n*10,'birth');born+=n;
@@ -2318,7 +2318,7 @@ G.AddData({
 			use:{'worker':1},
 			effects:[
 				{type:'explore',explored:0.1,unexplored:0},
-				{type:'explore',explored:0,unexplored:(																				0.1 / G.getRes('land')),req:{'migration':true}},
+				{type:'explore',explored:0,unexplored:(	0.1 / G.getRes('land')),req:{'migration':true}},
 				{type:'function',func:unitGetsConverted({},0.01,0.05,'[X] [people].','wanderer got lost','wanderers got lost'),chance:1/100},
 
 			],
@@ -3027,10 +3027,10 @@ G.AddData({
 
 		new G.Tech({
 			name:'nomadism',
-			desc:'@Your nomad tribe can support 35 [population,people] without housing@Improves [gatherer] and [hunter] efficiency by 5%@Effects end when you research Sedentism<>It takes great skill to make a large group of people self-sufficient, especially with only a limited capacity to exploit an area for resources before having to move on.',
+			desc:'@Your nomad tribe can support 1 [population,people] without housing per [land]@Improves [gatherer] and [hunter] efficiency by 5%@Effects end when you research Sedentism<>It takes great skill to make a large group of people self-sufficient, especially with only a limited capacity to exploit an area for resources before having to move on.',
 			icon:[20,1],
 			cost:{'insight':10},
-			req:{'hunting':true, 'sedentism':false},
+			req:{'scouting':true, 'sedentism':false},
 			effects:[
 			],
 			chance:2,
