@@ -718,12 +718,12 @@ G.AddData({
 			fractional:true,
 			tick:function(me,tick)
 			{
-				if (G.getRes('population').amount>0 && ((tick%2==0 && !G.has('nutrition')) || tick%4==0))
+				if (G.getRes('population').amount>0 && (tick%2==0)){
+					G.gain('happiness',me.amount*0.001,'health');
+				}
+				if (G.getRes('population').amount>0 && ( (tick%2==0 && !G.has('nutrition')) || (tick%4==0 && !G.has("healthy culture")) || (tick%8==0)))
 				{
 					//note : this is "soft" sickness; it affects the chance of people falling sick
-					//G.getRes('happiness').amount+=(me.amount-G.getRes('happiness').amount)*0.01;
-					G.gain('happiness',me.amount*0.001,'health');
-					
 					var sickness=0.1;
 					sickness+=Math.pow(Math.max(G.getRes('population').amount-50, 0),0.1)*0.1;//more people means more contagion
 					G.gain('health',-G.getRes('population').amount*(Math.random()*sickness),'disease');//people randomly get sick
@@ -2495,35 +2495,35 @@ G.AddData({
 		});
 		new G.Tech({
 			name:'language',
-			desc:'@provides 30 [inspiration]@provides 25 [wisdom]<>[language] improves on [speech] by combining complex grammar with a rich vocabulary, allowing for better communication and the first signs of culture.',
+			desc:'@provides 30 [inspiration]@provides 30 [wisdom]<>[language] improves on [speech] by combining complex grammar with a rich vocabulary, allowing for better communication and the first signs of culture.',
 			icon:[2,1],
 			cost:{'insight':10},
 			req:{'speech':true},
 			effects:[
-				{type:'provide res',what:{'inspiration':30,'wisdom':25}},
+				{type:'provide res',what:{'inspiration':30,'wisdom':30}},
 			],
 			chance:3,
 		});
 		
 		new G.Tech({
 			name:'oral tradition',
-			desc:'@unlocks [storyteller]@provides 15 [inspiration]@provides 15 [wisdom]<>[oral tradition] emerges when the members of a tribe gather at night to talk about their day. Stories, ideas, and myths are all shared and passed on from generation to generation.',
+			desc:'@unlocks [storyteller]@provides 20 [inspiration]@provides 20 [wisdom]<>[oral tradition] emerges when the members of a tribe gather at night to talk about their day. Stories, ideas, and myths are all shared and passed on from generation to generation.',
 			icon:[5,1],
 			cost:{'insight':10},
 			req:{'language':true},
 			effects:[
-				{type:'provide res',what:{'inspiration':15,'wisdom':15}},
+				{type:'provide res',what:{'inspiration':20,'wisdom':20}},
 			],
 		});
 
 		new G.Tech({
 			name:'writing',
-			desc:'@provides 15 [inspiration]@provides 15 [wisdom]@unlocks clay tablets (with [carving])<>Writing on tablets can preserve knowledge and culture throughout generations.',
+			desc:'@provides 10 [inspiration]@provides 10 [wisdom]@unlocks clay tablets (with [carving])<>Writing on tablets can preserve knowledge and culture throughout generations.',
 			icon:[2,10],
 			cost:{'insight':10},
-			req:{'language':true},
+			req:{'oral tradition':true, 'sedentism':true},
 			effects:[
-				{type:'provide res',what:{'inspiration':15,'wisdom':15}},
+				{type:'provide res',what:{'inspiration':10,'wisdom':10}},
 			],
 		});
 		
@@ -2938,7 +2938,7 @@ G.AddData({
 			name:'code of law',
 			desc:'@provides 15 [authority]@political units generate more [influence]<>',//TODO : desc
 			icon:[24,6],
-			cost:{'insight':20, 'influence':5},
+			cost:{'insight':20, 'influence':3},
 			req:{'symbolism':true,'sedentism':true},
 			effects:[
 				{type:'provide res',what:{'authority':15}},
@@ -3143,15 +3143,15 @@ G.AddData({
 		});
 		new G.Trait({
 			name:'mining evolution',
-			desc:'@[mine]mining is 25% faster, but mines cause health problems and collapse more often@unlocks mining related policies',
+			desc:'@[mine]ing is 25% faster, but mines cause health problems and collapse more often@unlocks mining related policies',
 			icon:[8,11,22,1],
-			chance:3,
+			chance:30,
 			req:{'mining':true}
 		});
 		new G.Trait({
 			name:'healthy culture',
-			desc:'@Generates [health] and halves the rate of disease@[herb]s cost much less [happiness] when eaten',
-			icon:[8,11,22,1],
+			desc:'@Halves the rate of disease@[herb]s cost much less [happiness] when eaten',
+			icon:[3,12,19,1],
 			chance:50,
 			req:{'nutrition':true},
 			cost:{'culture':20,'insight':20}
