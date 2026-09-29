@@ -1319,7 +1319,7 @@ G.AddData({
 			{
 				var toSpoil=me.amount*0.01;
 				var spent=G.lose(me.name,randomFloor(toSpoil),'decay');
-				G.pseudoGather(G.getRes('insight'),randomFloor(spent));
+				G.pseudoGather(G.getRes('insight'),randomFloor(spent) * 5);
 			},
 		});
 		new G.Res({
@@ -1743,8 +1743,8 @@ G.AddData({
 				{type:'convert',from:{'stick':20},into:{'fire pit':1},every:5,mode:'stick fires'},
 				{type:'convert',from:{'meat':1,'fire pit':0.01},into:{'cooked meat':1},every:1,repeat:5,mode:'cook'},
 				{type:'convert',from:{'seafood':1,'fire pit':0.01},into:{'cooked seafood':1},every:1,repeat:5,mode:'cook'},
-				{type:'convert',from:{'meat':2,'salt':1,'fire pit':0.01},into:{'cured meat':3},every:1,repeat:8,mode:'cure'},
-				{type:'convert',from:{'seafood':2,'salt':1,'fire pit':0.01},into:{'cured seafood':3},every:1,repeat:8,mode:'cure'},
+				{type:'convert',from:{'meat':2,'salt':1,'fire pit':0.01},into:{'cured meat':3},every:1,repeat:7,mode:'cure'},
+				{type:'convert',from:{'seafood':2,'salt':1,'fire pit':0.01},into:{'cured seafood':3},every:1,repeat:7,mode:'cure'},
 			],
 			req:{'fire-making':true},
 			category:'crafting',
@@ -2574,7 +2574,7 @@ G.AddData({
 			desc:'@Wanderers slowly explore new land tiles slowly@The rate of exploration greatly slows down the more land you have<>In search for greener pastures.',
 			icon:[24,7],
 			cost:{'insight':5},
-			req:{'sedentism':false,'scouting':false},
+			req:{'scouting':false},
 			effects:[
 			],
 		});
@@ -2939,7 +2939,7 @@ G.AddData({
 			desc:'@provides 15 [authority]@political units generate more [influence]<>',//TODO : desc
 			icon:[24,6],
 			cost:{'insight':20, 'influence':3},
-			req:{'symbolism':true,'sedentism':true},
+			req:{'symbolism':true,'writing':true},
 			effects:[
 				{type:'provide res',what:{'authority':15}},
 			],
@@ -3142,19 +3142,15 @@ G.AddData({
 			],
 		});
 		new G.Trait({
-			name:'mining evolution',
-			desc:'@[mine]ing is 25% faster, but mines cause health problems and collapse more often@unlocks mining related policies',
-			icon:[8,11,22,1],
-			chance:30,
-			req:{'mining':true}
-		});
-		new G.Trait({
 			name:'healthy culture',
-			desc:'@Halves the rate of disease@[herb]s cost much less [happiness] when eaten',
+			desc:'@Halves the rate of disease@People are less unhappy when eating [herb]s',
 			icon:[3,12,19,1],
 			chance:50,
 			req:{'nutrition':true},
-			cost:{'culture':20,'insight':20}
+			cost:{'culture':20,'insight':20},
+			effects:[
+				{type:'function',func:function(){G.getDict('herb').turnToByContext['eating']['happiness']=0.02;}},
+			],
 		});
 		/*=====================================================================================
 		POLICIES
